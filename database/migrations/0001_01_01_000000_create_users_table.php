@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('role')->default('USER');
+            $table->string('company_position')->default('CONTRATISTA');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
@@ -27,6 +28,7 @@ return new class extends Migration
         DB::table('users')->insert([
             'name' => 'Administrador',
             'role' => 'ADMIN',
+            'company_position' => 'ADMINISTRADOR',
             'email' => 'admin@admin.com',
             'password' => bcrypt('1234'), // Use a secure password
             'created_at' => now(),
