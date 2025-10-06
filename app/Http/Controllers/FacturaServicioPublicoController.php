@@ -29,30 +29,30 @@ class FacturaServicioPublicoController extends Controller
 
             // Apply filters if provided
             if ($request->has('query')) {
-                if ($request->filled('nit_cliente')) {
-                    $query->where('nit_cliente', 'like', '%' . trim($request->input('nit_cliente')) . '%');
-                }
-
-                if ($request->filled('contrato')) {
-                    $query->orWhere('contrato', 'like', '%' . trim($request->input('contrato')) . '%');
-                }
-
                 if ($request->filled('periodo')) {
-                    $query->orWhere('periodo', 'like', '%' . trim($request->input('periodo')) . '%');
+                    $query->where('periodo', '=',  trim($request->input('periodo')) );
                 }
-
+                if ($request->filled('uso')) {
+                    $query->where('uso',  trim($request->input('uso')) );
+                }
+                if ($request->filled('suscriptor')) {
+                    $query->where('nit_cliente', '=', trim($request->input('suscriptor')));
+                    $query->orWhere('suscriptor', 'like', '%' . trim($request->input('suscriptor')) . '%');
+                }
                 if ($request->filled('sector')) {
-                    $query->orWhere('sector', 'like', '%' . trim($request->input('sector')) . '%');
+                    $query->Where('sector', 'like', '%' . trim($request->input('sector')) . '%');
                 }
 
-                if ($request->filled('suscriptor') && trim($request->input('suscriptor')) !== '') {
-                    $query->where('suscriptor', 'like',  trim($request->input('suscriptor')) );
-                }
 
+
+
+                $all = $query->get();
+            }else{
+
+                $all = $query->paginate(10);
             }
 
             // Paginate the results
-            $all = $query->paginate(10);
 
             return response()->json($all);
         } catch (Exception $e) {
@@ -635,13 +635,18 @@ class FacturaServicioPublicoController extends Controller
             $this->fpdf->Cell(80, 10, str_replace("-","-$",number_format($totalSubsidio,0,",",".")),0, 1,  'L');//bloque resumen
 
             $this->fpdf->SetXY(75, 102.3);
-            $ajuste=substr($total+$totalSubsidio,-2);
-            if($ajuste>50 || $ajuste<50){
-                $totalPagar-=$ajuste;
-                $this->fpdf->Cell(80, 10, "-$".number_format($ajuste,0,",","."),0, 1,  'L');//bloque resumen
-            }else{
-                $ajuste=0;
-                $this->fpdf->Cell(80, 10, "$".number_format($ajuste,0,",","."),0, 1,  'L');//bloque resumen
+
+            //ajuste a la decena superior
+            $resto = $totalPagar % 50;
+
+            if ($resto != 0) {
+                $ajuste = $resto;
+                $totalPagar -= $ajuste;
+
+                $this->fpdf->Cell(80, 10, "-$" . number_format($ajuste, 0, ",", "."), 0, 1, 'L');
+            } else {
+                $ajuste = 0;
+                $this->fpdf->Cell(80, 10, "$0", 0, 1, 'L');
             }
             $totalPagar= "$ ".number_format($totalPagar,0,",",".");
 

@@ -36,8 +36,10 @@ const formData = ref({
 })
 
 const formDataFilter = ref({
-    nombre: '',
-    estado: ''
+    suscriptor: '',
+    uso: '',
+    periodo: '',
+    sector: ''
 })
 
 
@@ -151,13 +153,13 @@ const filterHandler = async () => {
   error.value = ''
   try {
 
-    if(formDataFilter.value.nombre && formDataFilter.value.nombre.trim().length<2){
+    if(!formDataFilter.value.suscriptor && !String(formDataFilter.value.suscriptor.trim()).length>2 && !formDataFilter.value.uso && !formDataFilter.value.periodo){
         error.value = 'El filtro debe tener al menos 2 caracteres'
         push.warning({ title: 'Filtro inválido!', message: error.value, duration: 5000 })
         loading.value = false
         return
     }
-    const { data } = await axios.get(URL_BASE_API+"/v1/tiposDocumentos?query=true&nombre="+formDataFilter.value.nombre+"&estado="+formDataFilter.value.estado, {
+    const  data  = await axios.get(URL_BASE_API+"/v1/facturasMasivasServicios?query=true&sector="+formDataFilter.value.sector+"&suscriptor="+formDataFilter.value.suscriptor+"&uso="+formDataFilter.value.uso+"&periodo="+formDataFilter.value.periodo, {
       headers: {
         Authorization: `${token_type.value} ${token.value}`
       }
@@ -468,17 +470,50 @@ watch(showForm, (visible) => {
 
     <form @submit.prevent="filterHandler">
         <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end">
-            <div style="width:65%;min-width:160px">
+            <div style="width:20%;min-width:160px">
                 <label class="is-size-7 has-text-weight-semibold">Nombre o código</label>
-                <input v-model="formDataFilter.nombre" class="input" placeholder="Ingrese un nombre, código o palabra clave">
+                <input v-model="formDataFilter.suscriptor" class="input" placeholder="Ingrese un nombre, nit o factura">
             </div>
             <div style="width:20%">
-                <label class="is-size-7 has-text-weight-semibold">Estado</label>
+                <label class="is-size-7 has-text-weight-semibold">Tipo de Uso</label>
                 <div class="select is-fullwidth">
-                <select v-model="formDataFilter.estado">
+                <select v-model="formDataFilter.uso">
                     <option value="">Todos</option>
-                    <option>ACTIVO</option>
-                    <option>INACTIVO</option>
+                    <option>RESIDENCIAL</option>
+                    <option>COMERCIAL</option>
+                    <option>OFICIAL</option>
+                    <option>ESPECIAL</option>
+                </select>
+                </div>
+            </div>
+            <div style="width:20%">
+                <label class="is-size-7 has-text-weight-semibold">SECTOR/ZONA</label>
+                <div class="select is-fullwidth">
+                <select v-model="formDataFilter.sector">
+                    <option value="">Todos</option>
+                    <option>SAN ISIDRO</option>
+                    <option>PAIMADO</option>
+                    <option>LA LOMA</option>
+                    <option>LOMA P. N</option>
+                    <option>VILLACONTO</option>
+                    <option>CHIGUARANDO</option>
+                    <option>CHIVIGUIDO</option>
+                    <option>P. JUAN</option>
+                </select>
+                </div>
+            </div>
+            <div style="width:20%">
+                <label class="is-size-7 has-text-weight-semibold">Periodo</label>
+                <div class="select is-fullwidth">
+                <select v-model="formDataFilter.periodo">
+                    <option value="">Todos</option>
+                    <option>ENERO 2024</option>
+                    <option>FEBRERO 2024</option>
+                    <option>MARZO 2024</option>
+                    <option>ABRIL 2024</option>
+                    <option>MAYO 2024</option>
+                    <option>JUNIO 2024</option>
+                    <option>JULIO 2024</option>
                 </select>
                 </div>
             </div>
