@@ -7,3 +7,5 @@ export const ROLES =  {
     GERENTE : 'GERENTE',
     INVITADO : 'INVITADO'
 }
+
+

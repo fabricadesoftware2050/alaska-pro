@@ -514,6 +514,11 @@ watch(showForm, (visible) => {
                     <option>MAYO 2024</option>
                     <option>JUNIO 2024</option>
                     <option>JULIO 2024</option>
+                    <option>AGOSTO 2024</option>
+                    <option>SEPTIEMBRE 2024</option>
+                    <option>OCTUBRE 2024</option>
+                    <option>NOVIEMBRE 2024</option>
+                    <option>DICIEMBRE 2024</option>
                 </select>
                 </div>
             </div>
