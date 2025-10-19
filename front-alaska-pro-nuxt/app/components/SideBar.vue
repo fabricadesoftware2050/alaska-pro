@@ -111,7 +111,7 @@
           <a href="#">Usuarios &amp; Roles</a>
           <a href="#">Integraciones</a>
           <a href="#">Auditoría</a>
-          <a href="#">Ajustes del sistema</a>
+           <NuxtLink to="/configuracion/empresa" class="menu-link px-3">Configuración</NuxtLink>
         </div>
       </div>
 

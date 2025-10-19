@@ -117,7 +117,7 @@
                     <div class="field">
                         <label class="label">Logo de la empresa</label>
                         <div class="control">
-                            <input type="file" @change="handleFileUpload" accept="image/*" class="input">
+                            <input type="file" @change="handleFileUploadLogo" accept="image/*" class="input">
                         </div>
                     </div>
                 </div>
@@ -138,6 +138,13 @@
                                 <i class="fas fa-toggle-on"></i>
                             </span>
                         </div>
+                    </div>
+
+
+                </div>
+                <div class="column is-6">
+                    <div class="field">
+                        <img style="height: 64px;"  :src="formData?.url_logo||'/images/icono.png'" alt="">
                     </div>
                 </div>
             </div>
@@ -173,7 +180,7 @@ import { watch, onMounted, ref } from 'vue'  // Importar ref
 import { useRouter } from 'vue-router'
 import axios from 'axios'
 import { navigateTo } from 'nuxt/app'
-import { ROLES, URL_BASE_API } from '~/utils/constants'
+import { ROLES, URL_BASE_API, URL_BASE_WEB } from '~/utils/constants'
 import { push } from 'notivue'
 import PaginateListComponent from '~/components/PaginateListComponent.vue'
 import LoadingAnimation from '~/components/LoadingAnimation.vue'
@@ -182,13 +189,13 @@ import { jwtDecode } from 'jwt-decode'
 
 const error = ref('')
 const importData = ref([])
-const loading = ref(true)
+const loading = ref(false)
 const router = useRouter()
 
 const token = ref()
 const user = ref()
 const token_type = ref()
-const showForm = ref(false)
+const showForm = ref(true)
 
 const formData = ref({
     id: '',
@@ -208,6 +215,49 @@ const formDataFilter = ref({
     nombre: '',
     estado: ''
 })
+
+const handleFileUploadLogo = async (e) => {
+  const file = e.target.files[0];
+if (!file) return;
+  if (file && file.size > 1024 * 1024*2) { // 2MB
+    push.warning({ title: 'Upps!', message: "El archivo es demasiado grande. El tamaño máximo permitido es 2MB."});
+    return;
+  }
+  else if (file && !file.type.startsWith("image/")) {
+     push.warning({ title: 'Upps!', message: "El archivo debe ser una imagen."});
+    return;
+  }
+  const formDa = new FormData();
+  formDa.append('file', file);
+
+  loading.value=true;
+
+  try {
+    const res = await axios.post(`${URL_BASE_API}/v1/upload`, formDa, {
+      headers: {
+        "Content-Type": "multipart/form-data", // ✅ Este debe ser multipart/form-data
+        "Authorization": `${token_type.value} ${token.value}`,
+      },
+    });
+
+    const data = res.data;
+    formData.value.url_logo=URL_BASE_WEB +data.url;
+
+    push.success({ title: 'Hecho!', message: `La imagen se ha subido correctamente`});
+  }catch (err) {
+    if(err.status===404){
+        push.warning({ title: 'Upps!', message: 'Aún no se ha registrado los datos' })
+    }else if(err.status===401){
+        push.warning({ title: 'Upps!', message: 'Su sesión expiró' })
+
+        navigateTo("/")
+    }else{
+        push.error({ title: 'Error!'||'Intente más tarde', message: err.message, timeout: 8000 })
+    }
+  } finally {
+    loading.value = false
+  }
+};
 
 
 onMounted(() => {
@@ -310,6 +360,7 @@ const submitHandler = async () => {
             }
         })
     }else{
+        delete formData.value.id
         response = await axios.post(CURRENT_URL,formData.value, {
             headers: {
                 Authorization: `${token_type.value} ${token.value}`
@@ -321,7 +372,6 @@ const submitHandler = async () => {
     if(response.status===200 || response.status===201){
         tipoDocumentosList.value = data
         push.success({ title: 'Operación exitosa!', message: response.status===201?'Item creado correctamente':'Item actualizado correctamente', duration: 3000 })
-        resetForm()
     }else{
         error.value = data.message || 'Respuesta desconocida del servidor'
         push.error({ title: 'Upps!', message: error.value, duration: 3000 })
@@ -343,6 +393,32 @@ const submitHandler = async () => {
     }
 }
 
+const getEmpresa = async (url) => {
+
+  loading.value = true
+  error.value = ''
+  try {
+
+    const { data } = await axios.get(url, {
+      headers: {
+        Authorization: `${token_type.value} ${token.value}`
+      }
+    })
+    formData.value = data
+  } catch (err) {
+    if(err.status===404){
+        push.warning({ title: 'Upps!', message: 'Aún no se ha registrado los datos' })
+    }else if(err.status===401){
+        push.warning({ title: 'Upps!', message: 'Su sesión expiró' })
+
+        navigateTo("/")
+    }else{
+        push.error({ title: 'Error!'||'Intente más tarde', message: err.message, timeout: 8000 })
+    }
+  } finally {
+    loading.value = false
+  }
+}
 
 
 
