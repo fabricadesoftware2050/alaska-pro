@@ -37,7 +37,15 @@ return [
             'throw' => false,
             'report' => false,
         ],
-
+        'public' => [
+            'driver' => 'local',
+            'root' => public_path('files'),// importante: apunta a public/files
+            'url' => env('APP_URL').'/files',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+/*
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
@@ -46,7 +54,7 @@ return [
             'throw' => false,
             'report' => false,
         ],
-
+*/
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

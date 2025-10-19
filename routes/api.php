@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\FacturaServicioPublicoController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\TipoDocumentoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,6 +22,7 @@ Route::group(['prefix' => 'v1'], function () {
         });
 
         Route::apiResource('/facturas', FacturaController::class);
+        Route::apiResource('/empresas', EmpresaController::class);
         Route::apiResource('/tiposDocumentos', TipoDocumentoController::class);
         Route::post('/import_tiposDocumentos', [TipoDocumentoController::class,'importData']);
         Route::get('/import_tiposDocumentos', [TipoDocumentoController::class,'index']);
@@ -28,8 +31,10 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/import_facturasMasivasServicios', [FacturaServicioPublicoController::class,'index']);
 
 
-         Route::get('/pdf_facturasMasivasServicios/{id}', [FacturaServicioPublicoController::class,'showInvoice']);
+        Route::get('/pdf_facturasMasivasServicios/{id}', [FacturaServicioPublicoController::class,'showInvoice']);
 
+        Route::post('/upload', [FileController::class, 'subir']);
+        Route::delete('/deleteFile', [FileController::class, 'eliminarArchivo']);
 
     });
 
