@@ -351,22 +351,12 @@ const submitHandler = async () => {
 
     try {
     let CURRENT_URL=URL_BASE_API + '/v1/empresas'
-    let response={}
-    if(formData.value.id>0){
-        CURRENT_URL+= '/'+formData.value.id
-        response = await axios.put(CURRENT_URL,formData.value, {
+    const response = await axios.post(CURRENT_URL,formData.value, {
             headers: {
                 Authorization: `${token_type.value} ${token.value}`
             }
         })
-    }else{
-        delete formData.value.id
-        response = await axios.post(CURRENT_URL,formData.value, {
-            headers: {
-                Authorization: `${token_type.value} ${token.value}`
-            }
-        })
-    }
+
 
     const { data } = response
     if(response.status===200 || response.status===201){

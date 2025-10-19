@@ -21,7 +21,50 @@ class EmpresaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            if ($request->has('id') && !empty($request->id)) {
+                // Buscar el registro existente
+                $modelo = Empresa::findOrFail($request->id);
+
+                // Actualizar con los nuevos datos
+                $modelo->update([
+                    'nit'       => $request->input('nit'),
+                    'razon_social' => $request->input('razon_social'),
+                    'siglas'       => $request->input('siglas'),
+                    'nombre_representante_legal'       => $request->input('nombre_representante_legal'),
+                    'nombre_contador'       => $request->input('nombre_contador'),
+                    'matricula_contador'       => $request->input('matricula_contador'),
+                    'nombre_revisor_fiscal'       => $request->input('nombre_revisor_fiscal'),
+                    'matricula_revisor_fiscal'       => $request->input('matricula_revisor_fiscal'),
+                    'url_logo'       => $request->input('url_logo'),
+                    'estado'       => $request->input('estado'),
+                ]);
+                return response()->json($modelo, 200);
+            } else {
+                // Si no hay id → crear nuevo
+                $modelo = Empresa::create([
+                   'nit'       => $request->input('nit'),
+                    'razon_social' => $request->input('razon_social'),
+                    'siglas'       => $request->input('siglas'),
+                    'nombre_representante_legal'       => $request->input('nombre_representante_legal'),
+                    'nombre_contador'       => $request->input('nombre_contador'),
+                    'matricula_contador'       => $request->input('matricula_contador'),
+                    'nombre_revisor_fiscal'       => $request->input('nombre_revisor_fiscal'),
+                    'matricula_revisor_fiscal'       => $request->input('matricula_revisor_fiscal'),
+                    'url_logo'       => $request->input('url_logo'),
+                    'estado'       => $request->input('estado','ACTIVO'),
+                ]);
+
+
+                return response()->json($modelo, 201);
+            }
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error'   => 'Failed to save resource',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function show(string $id)
