@@ -8,6 +8,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const user = ref({})
+const empresa = ref({})
 
 
 const token = ref()
@@ -44,6 +45,35 @@ const logOut = async () => {
     }
 }
 
+const getEmpresa = async (url) => {
+
+  loading.value = true
+  error.value = ''
+  try {
+
+    const { data } = await axios.get(url, {
+      headers: {
+        Authorization: `${token_type.value} ${token.value}`
+      }
+    })
+    localStorage.setItem('company',JSON.stringify(data.data))
+    empresa.value = data.data
+    push.success({ title: 'Datos Cargados!', message: data.message })
+  } catch (err) {
+    if(err.status===404){
+        push.warning({ title: 'Upps!', message: 'Aún no se ha registrado los datos' })
+    }else if(err.status===401){
+        push.warning({ title: 'Upps!', message: 'Su sesión expiró' })
+
+        navigateTo("/")
+    }else{
+        push.error({ title: 'Error!'||'Intente más tarde', message: err.message, timeout: 8000 })
+    }
+  } finally {
+    loading.value = false
+  }
+}
+
 onMounted(() => {
   if (import.meta.client) {
     token.value = localStorage.getItem('token')
@@ -56,6 +86,7 @@ onMounted(() => {
     navigateTo('/')
   }
 
+getEmpresa(URL_BASE_API+'/v1/empresas/1')
 
 })
 </script>
@@ -68,8 +99,8 @@ onMounted(() => {
       <i class="fa-solid fa-bars"></i>
     </button>
     <div style="display:flex;flex-direction:column;">
-      <div style="font-weight:600;color:var(--secondary)"><strong>MÓDULO:</strong> SERVICIOS PÚBLICOS DOMICILIARIOS</div>
-      <div style="font-size:.78rem;color:var(--muted); text-transform: uppercase;">EMPRESA: <strong>AGUAS DE RÍO QUITO</strong> | Periodo: <strong>Septiembre 2025</strong></div>
+      <div style="font-weight:600;color:var(--secondary)"><strong>SISTEMA:</strong> SERVICIOS PÚBLICOS DOMICILIARIOS</div>
+      <div style="font-size:.78rem;color:var(--muted); text-transform: uppercase;">EMPRESA: <strong>{{ empresa?.siglas||'Cargando...' }}</strong> | Periodo: <strong>Septiembre 2025</strong></div>
     </div>
   </div>
 

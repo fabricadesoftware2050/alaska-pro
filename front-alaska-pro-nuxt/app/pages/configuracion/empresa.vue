@@ -1,6 +1,5 @@
 <template>
     <LoadingAnimation v-if="loading" />
-    <button @click="showForm= !showForm" :title="showForm?'Cerrar':'Agregar nuevo registro'" :style="showForm?'background-color:#ff000069':''" class="fab"><i :class="showForm?'fa-solid fa-close':'fa-solid fa-plus'"></i></button>
 
     <section v-show="showForm" class="form-section">
     <h2 class="title is-5 has-text-centered mb-5">Registrar Empresa</h2>
@@ -157,17 +156,9 @@
                         <span>Guardar</span>
                     </button>
                 </p>
-                <p class="control">
-                    <button @click="resetForm" class="button is-light">
-                        <span class="icon"><i class="fas fa-refresh"></i></span>
-                        <span>Limpiar</span>
-                    </button>
-                </p>
             </div>
         </div>
     </form>
-    <ImportDataComponent :import-data="importData" :import-function="importTipoDocumentos" />
-
 
   </section>
 </template>
@@ -339,19 +330,17 @@ getEmpresa(URL_BASE_API+'/v1/empresas/1')
 })
 
 const submitHandler = async () => {
-    loading.value = true
+
     error.value = ''
 
     if(!formData.value.razon_social || !formData.value.nit || !formData.value.nombre_representante_legal){
         error.value = 'Por favor complete todos los campos obligatorios'
         push.warning({ title: 'Campos obligatorios!', message: error.value, duration: 3000 })
-        loading.value = false
         return
     }
-
+    loading.value = true
     try {
-    let CURRENT_URL=URL_BASE_API + '/v1/empresas'
-    const response = await axios.post(CURRENT_URL,formData.value, {
+    const response = await axios.post(URL_BASE_API + '/v1/empresas',formData.value, {
             headers: {
                 Authorization: `${token_type.value} ${token.value}`
             }
@@ -360,7 +349,8 @@ const submitHandler = async () => {
 
     const { data } = response
     if(response.status===200 || response.status===201){
-        tipoDocumentosList.value = data
+        formData.value = data
+        localStorage.setItem('company',JSON.stringify(data))
         push.success({ title: 'Operación exitosa!', message: response.status===201?'Item creado correctamente':'Item actualizado correctamente', duration: 3000 })
     }else{
         error.value = data.message || 'Respuesta desconocida del servidor'
@@ -372,7 +362,7 @@ const submitHandler = async () => {
             error.value = 'Credenciales inválidas'
             push.error({ title: 'Upps!', message: error.value, duration: 3000 })
         }else if(err.response?.data?.message.includes('UNIQUE')){
-            error.value = 'Ya existe un tipo de documento con estos datos'
+            error.value = 'Ya existe un elemento con estos datos'
             push.error({ title: 'Duplicado!', message: error.value, duration: 3000 })
         }else{
             error.value = err.response?.data?.message || 'Intenta nuevamente'
@@ -394,7 +384,8 @@ const getEmpresa = async (url) => {
         Authorization: `${token_type.value} ${token.value}`
       }
     })
-    formData.value = data
+    formData.value = data.data
+    push.success({ title: 'Datos Cargados!', message: data.message })
   } catch (err) {
     if(err.status===404){
         push.warning({ title: 'Upps!', message: 'Aún no se ha registrado los datos' })
@@ -413,10 +404,5 @@ const getEmpresa = async (url) => {
 
 
 
-watch(showForm, (visible) => {
-  if (!visible) {
-    resetForm()
-  }
-})
 
 </script>
