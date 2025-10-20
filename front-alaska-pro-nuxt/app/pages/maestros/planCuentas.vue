@@ -39,7 +39,7 @@ const formData = ref({
 
 const formDataFilter = ref({
     nombre: '',
-    codigo: ''
+    estado: ''
 })
 
 
@@ -159,7 +159,7 @@ const filterHandler = async () => {
         loading.value = false
         return
     }
-    const { data } = await axios.get(URL_BASE_API+"/v1/cuentasContables?query=true&nombre="+formDataFilter.value.nombre+"&codigo="+formDataFilter.value.codigo, {
+    const { data } = await axios.get(URL_BASE_API+"/v1/cuentasContables?query=true&nombre="+formDataFilter.value.nombre+"&estado="+formDataFilter.value.estado, {
       headers: {
         Authorization: `${token_type.value} ${token.value}`
       }
@@ -262,7 +262,7 @@ const submitHandler = async () => {
     const { data } = response
     if(response.status===200 || response.status===201){
         cuentasList.value = data
-        push.success({ title: 'Operación exitosa!', message: response.status===201?'Tipo de documento creado correctamente':'Tipo de documento actualizado correctamente', duration: 3000 })
+        push.success({ title: 'Operación exitosa!', message: response.status===201?'Item creado correctamente':'Item actualizado correctamente', duration: 3000 })
         resetForm()
     }else{
         error.value = data.message || 'Respuesta desconocida del servidor'
@@ -274,7 +274,7 @@ const submitHandler = async () => {
             error.value = 'Credenciales inválidas'
             push.error({ title: 'Upps!', message: error.value, duration: 3000 })
         }else if(err.response?.data?.message.includes('UNIQUE')){
-            error.value = 'Ya existe un tipo de documento con estos datos'
+            error.value = 'Ya existe un elemento con estos datos'
             push.error({ title: 'Duplicado!', message: error.value, duration: 3000 })
         }else{
             error.value = err.response?.data?.message || 'Intenta nuevamente'
@@ -527,8 +527,10 @@ watch(showForm, (visible) => {
       <thead>
         <tr>
           <th>Código</th>
-          <th>Nombre corto</th>
           <th>Nombre</th>
+          <th>Tipo</th>
+          <th>Naturaleza</th>
+          <th>Nivel</th>
           <th>Estado</th>
           <th>Acciones</th>
         </tr>
@@ -536,17 +538,19 @@ watch(showForm, (visible) => {
       <tbody>
         <tr v-for="da in cuentasList.data" :class="{ 'is-inactive': da.estado==='INACTIVO' }" :key="da.id">
           <td>{{da.codigo}}</td>
-          <td>{{da.nombre_corto}}</td>
           <td>{{da.nombre}}</td>
+          <td>{{da.tipo}}</td>
+          <td>{{da.naturaleza}}</td>
+          <td>{{da.nivel}}</td>
           <td>
             <span
               class="tag-status "
               :class="{
-                'tag-pagada': da.estado === 'ACTIVO',
-                'tag-vencida': da.estado === 'INACTIVO'
+                'tag-pagada': da.activa === 1|| da.activa == 'true'|| da.activa == 'SI',
+                'tag-vencida': da.activa !== 1 && da.activa != 'true'&& da.activa != 'SI'
               }"
             >
-              {{da.estado}}
+              {{da.activa === 1|| da.activa == 'true'|| da.activa == 'SI'?'ACTIVA':'INACTIVA'}}
             </span>
           </td>
           <td>

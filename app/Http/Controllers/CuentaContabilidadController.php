@@ -28,6 +28,10 @@ class CuentaContabilidadController extends Controller
                     $query->orWhere('codigo', 'like', '%' . trim($request->input('nombre')) . '%');
                 }
 
+                if ($request->filled('estado')) {
+                    $query->orWhere('activa', 'like', '%' . trim($request->input('estado')) . '%');
+                }
+
 
             }
 
