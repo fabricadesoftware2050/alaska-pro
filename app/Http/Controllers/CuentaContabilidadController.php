@@ -166,7 +166,7 @@ class CuentaContabilidadController extends Controller
 
 
 
-                return response()->json(['message' => "Insertados: $totalInserted de $total", 'data' => $all ]);
+                return response()->json(['message' => "Insertados: $totalInserted de $total", 'data' => $all,'registros'=>$registros ]);
             } catch (Exception $e) {
                 DB::rollBack();
                 return response()->json(['error' => $e->getMessage()], 500);
