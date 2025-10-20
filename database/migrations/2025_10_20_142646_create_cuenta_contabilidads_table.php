@@ -39,8 +39,7 @@ return new class extends Migration
             // ID de la cuenta padre (para jerarquía)
             $table->foreignId('padre_id')
                 ->nullable()
-                ->constrained('cuentas_contables')
-                ->cascadeOnDelete();
+                ->constrained('cuentas_contables');
 
             // Estado (activa o inactiva)
             $table->boolean('activa')->default(true);

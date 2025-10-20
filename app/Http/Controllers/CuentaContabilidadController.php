@@ -145,7 +145,7 @@ class CuentaContabilidadController extends Controller
                         continue;
                     }
 
-                        $res=DB::table('cuentas_contables')->insertOrIgnore([
+                        $res=DB::table('cuentas_contables')->insert([
                             'codigo'       => $row[0],
                             'nombre' => $row[1],
                             'tipo'       => $row[2],
