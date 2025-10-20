@@ -124,6 +124,7 @@
           <span class="chev"><i class="fa-solid fa-chevron-down"></i></span>
         </label>
         <div class="submenu">
+          <NuxtLink to="/maestros/planCuentas">Plan de Cuentas</NuxtLink>
           <NuxtLink to="/maestros/tipoDocumento">Tipos de Documento</NuxtLink>
         </div>
       </div>

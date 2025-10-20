@@ -6,6 +6,7 @@ use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\FacturaServicioPublicoController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\TipoDocumentoController;
+use App\Models\CuentaContabilidad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +24,9 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::apiResource('/facturas', FacturaController::class);
         Route::apiResource('/empresas', EmpresaController::class);
+        Route::apiResource('/cuentasContables', CuentaContabilidad::class);
+        Route::post('/import_cuentasContables', [CuentaContabilidad::class,'importData']);
+        Route::get('/import_cuentasContables', [CuentaContabilidad::class,'index']);
         Route::apiResource('/tiposDocumentos', TipoDocumentoController::class);
         Route::post('/import_tiposDocumentos', [TipoDocumentoController::class,'importData']);
         Route::get('/import_tiposDocumentos', [TipoDocumentoController::class,'index']);
