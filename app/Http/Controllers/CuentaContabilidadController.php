@@ -31,10 +31,11 @@ class CuentaContabilidadController extends Controller
 
             }
 
+            $query->orderBy('codigo','ASC');
             // Paginate the results
-            $tipoDocumentos = $query->paginate(10);
+            $all = $query->paginate(10);
 
-            return response()->json($tipoDocumentos);
+            return response()->json($all);
         } catch (Exception $e) {
             return response()->json(['error' => 'Failed to fetch data', 'message' => $e->getMessage()], 500);
         }
