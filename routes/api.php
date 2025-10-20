@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CuentaContabilidadController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\FacturaServicioPublicoController;
@@ -24,9 +25,9 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::apiResource('/facturas', FacturaController::class);
         Route::apiResource('/empresas', EmpresaController::class);
-        Route::apiResource('/cuentasContables', CuentaContabilidad::class);
-        Route::post('/import_cuentasContables', [CuentaContabilidad::class,'importData']);
-        Route::get('/import_cuentasContables', [CuentaContabilidad::class,'index']);
+        Route::apiResource('/cuentasContables', CuentaContabilidadController::class);
+        Route::post('/import_cuentasContables', [CuentaContabilidadController::class,'importData']);
+        Route::get('/import_cuentasContables', [CuentaContabilidadController::class,'index']);
         Route::apiResource('/tiposDocumentos', TipoDocumentoController::class);
         Route::post('/import_tiposDocumentos', [TipoDocumentoController::class,'importData']);
         Route::get('/import_tiposDocumentos', [TipoDocumentoController::class,'index']);
