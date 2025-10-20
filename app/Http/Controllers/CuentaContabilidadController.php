@@ -151,7 +151,7 @@ class CuentaContabilidadController extends Controller
                             'tipo'       => $row[2],
                             'naturaleza'       => $row[3],
                             'nivel'       => $row[4],
-                            'padre_id'       => $row[5]??null,
+                            'padre_id'       => $row[5]||null,
                             'activa'       => $row[6]==1 ||$row[6]!="",
                             'descripcion'       => $row[7],
                             'created_at'   => now(),
