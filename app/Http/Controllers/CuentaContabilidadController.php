@@ -141,7 +141,7 @@ class CuentaContabilidadController extends Controller
             try {
                 foreach ($registros as $row) {
                     // Validamos que existan los datos o las 4 columnas
-                    if (count($row) < 4) {
+                    if (count($row) < 1) {
                         continue;
                     }
 
