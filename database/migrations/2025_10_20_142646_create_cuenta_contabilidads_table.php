@@ -21,17 +21,10 @@ return new class extends Migration
             $table->string('nombre', 150);
 
             // Tipo: Activo, Pasivo, Patrimonio, Ingreso, Gasto, Costo
-            $table->enum('tipo', [
-                'activo',
-                'pasivo',
-                'patrimonio',
-                'ingreso',
-                'gasto',
-                'costo',
-            ]);
+            $table->string('tipo', 100);
 
             // Naturaleza contable (Débito o Crédito)
-            $table->enum('naturaleza', ['debito', 'credito']);
+            $table->string('naturaleza', 100);
 
             // Nivel jerárquico (1=clase, 2=grupo, 3=cuenta, 4=subcuenta)
             $table->unsignedTinyInteger('nivel')->default(4);

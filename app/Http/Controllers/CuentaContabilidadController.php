@@ -82,7 +82,7 @@ class CuentaContabilidadController extends Controller
                     'activa'       => $request->input('activa'),
                     'descripcion'       => $request->input('descripcion')
                 ]);
-                $all = CuentaContabilidad::paginate(10);
+                $all = CuentaContabilidad::paginate(10)->orderBy('codigo','ASC');;
 
                 return response()->json($all, 201);
             }

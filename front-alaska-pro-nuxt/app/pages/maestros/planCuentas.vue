@@ -327,7 +327,7 @@ watch(showForm, (visible) => {
     <button @click="showForm= !showForm" :title="showForm?'Cerrar':'Agregar nuevo registro'" :style="showForm?'background-color:#ff000069':''" class="fab"><i :class="showForm?'fa-solid fa-close':'fa-solid fa-plus'"></i></button>
 
     <section v-show="showForm" class="form-section">
-    <h2 class="title is-5 has-text-centered mb-5">Registrar Tipo de Documento</h2>
+    <h2 class="title is-5 has-text-centered mb-5">Gestionar Cuentas</h2>
 
     <form @submit.prevent="submitHandler">
         <div class="box">
@@ -502,6 +502,7 @@ watch(showForm, (visible) => {
     <form @submit.prevent="filterHandler">
         <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-end">
             <div style="width:65%;min-width:160px">
+            <h2 class="title is-5 has-text-centered mb-5">Plan de Cuentas</h2>
                 <label class="is-size-7 has-text-weight-semibold">Nombre o código</label>
                 <input v-model="formDataFilter.nombre" class="input" placeholder="Ingrese un nombre, código o palabra clave">
             </div>
@@ -510,8 +511,8 @@ watch(showForm, (visible) => {
                 <div class="select is-fullwidth">
                 <select v-model="formDataFilter.estado">
                     <option value="">Todos</option>
-                    <option>ACTIVO</option>
-                    <option>INACTIVO</option>
+                    <option value="1">ACTIVA</option>
+                    <option value="0">INACTIVA</option>
                 </select>
                 </div>
             </div>
@@ -526,6 +527,7 @@ watch(showForm, (visible) => {
     <table class="table is-fullwidth is-hoverable">
       <thead>
         <tr>
+          <th>ID</th>
           <th>Código</th>
           <th>Nombre</th>
           <th>Tipo</th>
@@ -537,6 +539,7 @@ watch(showForm, (visible) => {
       </thead>
       <tbody>
         <tr v-for="da in cuentasList.data" :class="{ 'is-inactive': da.estado==='INACTIVO' }" :key="da.id">
+          <td>{{da.id}}</td>
           <td>{{da.codigo}}</td>
           <td>{{da.nombre}}</td>
           <td>{{da.tipo}}</td>
